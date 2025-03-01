@@ -4,34 +4,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { BiPackage, BiCategory, BiMoney, BiListUl, BiChart } from "react-icons/bi";
 import { FaShoppingCart, FaUsers } from "react-icons/fa";
 
-function Home({ auth }) {
-    // Sample data for statistics
-    const stats = {
-        totalProducts: 120,
-        totalCategories: 10,
-        totalOrders: 56,
-        totalRevenue: 15600,
-        totalCustomers: 78,
-    };
-
-    // Sample recent orders data
-    const recentOrders = [
-        { id: 101, customer: "John Doe", total: "$200", status: "Pending", date: "2025-02-07" },
-        { id: 102, customer: "Jane Smith", total: "$350", status: "Shipped", date: "2025-02-06" },
-        { id: 103, customer: "Alice Johnson", total: "$120", status: "Delivered", date: "2025-02-05" },
-        { id: 104, customer: "Bob Brown", total: "$280", status: "Pending", date: "2025-02-04" },
-    ];
-
-    // Sample sales data for chart
-    const salesData = [
-        { month: "Sep", revenue: 3000 },
-        { month: "Oct", revenue: 4000 },
-        { month: "Nov", revenue: 5000 },
-        { month: "Dec", revenue: 6000 },
-        { month: "Jan", revenue: 7000 },
-        { month: "Feb", revenue: 6500 },
-    ];
-
+function Home({ auth, stats, recentOrders, salesData }) {
+    console.log(stats, recentOrders, salesData);
     return (
         <Dashboard auth={auth}>
             <div className="space-y-6">
@@ -94,10 +68,16 @@ function Home({ auth }) {
                             {recentOrders.map((order) => (
                                 <tr key={order.id} className="text-center">
                                     <td className="border border-gray-600 p-2">{order.id}</td>
-                                    <td className="border border-gray-600 p-2">{order.customer}</td>
+                                    <td className="border border-gray-600 p-2">
+                                        {order.name}<br />
+                                        <span className="text-base text-gray-500">{order.email}</span>
+                                    </td>
                                     <td className="border border-gray-600 p-2">{order.total}</td>
-                                    <td className="border border-gray-600 p-2">{order.status}</td>
-                                    <td className="border border-gray-600 p-2">{order.date}</td>
+                                    <td className="border border-gray-600 p-2 text-center">
+                                        {order.status === 'pending' ? <span className="text-yellow-500 font-semibold"> Pending</span> : <span className="text-green-500 font-semibold"> Paid</span>}
+                                    </td>                                    <td className="border border-gray-600 p-2">
+                                        {new Date(order.created_at).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

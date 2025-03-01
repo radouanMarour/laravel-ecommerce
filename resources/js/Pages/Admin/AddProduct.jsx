@@ -10,28 +10,41 @@ function AddProduct({ auth, categories }) {
         stock: "",
         category_id: "",
         description: "",
-        images: [],
+        main_image: "",
+        thumbnail_images: []
     });
 
-    const [imagePreviews, setImagePreviews] = useState([]);
+    const [mainImagePreview, setMainImagePreview] = useState(null);
+    const [thumbnailPreviews, setThumbnailPreviews] = useState([]);
 
-    const handleImageChange = (e) => {
+    const handleMainImageChange = (e) => {
+        const file = e.target.files[0];
+        setData("main_image", file);
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setMainImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleThumbnailsChange = (e) => {
         const files = Array.from(e.target.files);
-        setData("images", files);
+        setData("thumbnail_images", files);
 
-        // Generate previews for all selected images
         const previews = [];
         files.forEach(file => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 previews.push(reader.result);
-                setImagePreviews([...previews]);
+                setThumbnailPreviews([...previews]);
             };
             reader.readAsDataURL(file);
         });
     };
 
-    // Modify the form submit to use FormData
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -39,13 +52,18 @@ function AddProduct({ auth, categories }) {
         formData.append('name', data.name);
         formData.append('price', data.price);
         formData.append('stock', data.stock);
-        formData.append('category', data.category_id);
+        formData.append('category_id', data.category_id);
         formData.append('description', data.description);
 
-        // Append multiple images
-        if (data.images) {
-            Array.from(data.images).forEach((image, index) => {
-                formData.append(`images[${index}]`, image);
+        // Append main image
+        if (data.main_image) {
+            formData.append('main_image', data.main_image);
+        }
+
+        // Append thumbnail images
+        if (data.thumbnail_images) {
+            Array.from(data.thumbnail_images).forEach((image, index) => {
+                formData.append(`thumbnail_images[${index}]`, image);
             });
         }
 
@@ -123,61 +141,99 @@ function AddProduct({ auth, categories }) {
                         {errors.description && <div className="text-red-500 mt-1">{errors.description}</div>}
                     </div>
 
-                    <div>
-                        <label className="block mb-2">Product Images</label>
-                        <div className="flex items-center space-x-4">
-                            <label className="cursor-pointer bg-blue-600 px-4 py-2 rounded flex items-center hover:bg-blue-700">
-                                <FaUpload className="mr-2" />
-                                Choose Images
-                                <input
-                                    type="file"
-                                    className="hidden"
-                                    onChange={handleImageChange}
-                                    accept="image/*"
-                                    multiple
-                                />
-                            </label>
-                            {imagePreviews.length > 0 && (
-                                <div className="flex flex-wrap gap-4 mt-2">
-                                    {imagePreviews.map((preview, index) => (
-                                        <div key={index} className="relative w-24 h-24">
-                                            <img
-                                                src={preview}
-                                                alt={`Preview ${index + 1}`}
-                                                className="w-full h-full object-cover rounded"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    const newPreviews = imagePreviews.filter((_, i) => i !== index);
-                                                    setImagePreviews(newPreviews);
-                                                    const newFiles = Array.from(data.images).filter((_, i) => i !== index);
-                                                    setData("images", newFiles);
-                                                }}
-                                                className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 text-white hover:bg-red-600"
-                                            >
-                                                ×
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block mb-2">Main Product Image</label>
+                            <div className="flex items-center space-x-4">
+                                <label className="cursor-pointer bg-blue-600 px-4 py-2 rounded flex items-center hover:bg-blue-700">
+                                    <FaUpload className="mr-2" />
+                                    Choose Main Image
+                                    <input
+                                        type="file"
+                                        className="hidden"
+                                        onChange={handleMainImageChange}
+                                        accept="image/*"
+                                    />
+                                </label>
+                                {mainImagePreview && (
+                                    <div className="relative w-24 h-24">
+                                        <img
+                                            src={mainImagePreview}
+                                            alt="Main product image"
+                                            className="w-full h-full object-cover rounded"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setMainImagePreview(null);
+                                                setData("main_image", null);
+                                            }}
+                                            className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 text-white hover:bg-red-600"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            {errors.main_image && <div className="text-red-500 mt-1">{errors.main_image}</div>}
                         </div>
-                        {errors.images && <div className="text-red-500 mt-1">{errors.images}</div>}
+
+                        <div>
+                            <label className="block mb-2">Product Thumbnails</label>
+                            <div className="flex items-center space-x-4">
+                                <label className="cursor-pointer bg-blue-600 px-4 py-2 rounded flex items-center hover:bg-blue-700">
+                                    <FaUpload className="mr-2" />
+                                    Choose Thumbnails
+                                    <input
+                                        type="file"
+                                        className="hidden"
+                                        onChange={handleThumbnailsChange}
+                                        accept="image/*"
+                                        multiple
+                                    />
+                                </label>
+                                {thumbnailPreviews.length > 0 && (
+                                    <div className="flex flex-wrap gap-4 mt-2">
+                                        {thumbnailPreviews.map((preview, index) => (
+                                            <div key={index} className="relative w-24 h-24">
+                                                <img
+                                                    src={preview}
+                                                    alt={`Thumbnail ${index + 1}`}
+                                                    className="w-full h-full object-cover rounded"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newPreviews = thumbnailPreviews.filter((_, i) => i !== index);
+                                                        setThumbnailPreviews(newPreviews);
+                                                        const newFiles = Array.from(data.thumbnail_images).filter((_, i) => i !== index);
+                                                        setData("thumbnail_images", newFiles);
+                                                    }}
+                                                    className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 text-white hover:bg-red-600"
+                                                >
+                                                    ×
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            {errors.thumbnail_images && <div className="text-red-500 mt-1">{errors.thumbnail_images}</div>}
+                        </div>
                     </div>
 
                     <div className="flex justify-end space-x-3">
                         <button
                             type="button"
                             onClick={() => window.history.back()}
-                            className="bg-gray-600 px-6 py-2 rounded hover:bg-gray-700"
+                            className="cursor-pointer bg-gray-600 px-6 py-2 rounded hover:bg-gray-700"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={processing}
-                            className="bg-green-500 px-6 py-2 rounded hover:bg-green-600 disabled:opacity-50"
+                            className="cursor-pointer bg-green-500 px-6 py-2 rounded hover:bg-green-600 disabled:opacity-50"
                         >
                             {processing ? "Adding..." : "Add Product"}
                         </button>

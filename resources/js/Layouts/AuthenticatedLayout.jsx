@@ -1,98 +1,69 @@
-import { useState } from 'react';
-import ApplicationLogo from '@/Components/ApplicationLogo';
+import { useEffect, useState } from 'react';
+import { FiShoppingBag } from "react-icons/fi";
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
+import { FaShoppingBag, FaShoppingCart, FaUserCircle } from "react-icons/fa";
+import { useCart } from '@/Context/CartContext';
 
 export default function Authenticated({ user, header, children }) {
+    const { categories } = usePage().props;
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const { cart } = useCart()
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <nav className="bg-white border-b border-gray-100">
+            <nav className="bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16 fixed w-full top-0 left-0 bg-white z-10">
+                    <div className="flex justify-between h-16 fixed w-full top-0 left-0 bg-gray-800 z-10 px-6">
+                        <div className="shrink-0 flex items-center">
+                            <Link href="/">
+                                <FiShoppingBag className='h-8 w-8 text-white' />
+                            </Link>
+                        </div>
                         <div className="flex">
-                            <div className="shrink-0 flex items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                </Link>
-                            </div>
-
-                            {/* <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink href={route('home')} active={route().current('home')}>
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink className="text-white" href={route('home')} active={route().current('home')}>
                                     Home
                                 </NavLink>
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
-                                            >
-                                                Shop
-
-                                                <svg
-                                                    className="ms-2 -me-0.5 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
-
-                                    <Dropdown.Content>
-                                        <Dropdown.Link href={route('products.index', 'category=Men\'s')}>Men's</Dropdown.Link>
-                                        <Dropdown.Link href={route('products.index', 'category=Women\'s')}>Women's</Dropdown.Link>
-                                        <Dropdown.Link href={route('products.index', 'category=Kids')}>Kids</Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div> */}
+                                {categories?.map(category => (
+                                    <NavLink
+                                        key={category.id}
+                                        className="text-white"
+                                        href={route('products.index', [category.id, category.slug])}
+                                        active={route().current('products.index', [category.id, category.slug])}
+                                    >
+                                        {category.name}
+                                    </NavLink>
+                                ))}
+                            </div>
                         </div>
-
                         <div className="hidden sm:flex sm:items-center sm:ms-6">
-                            <div className="ms-3 relative">
+                            <div className="ms-3 relative flex justify-center items-center">
+                                <Link href={route('cart.index')} className='relative'>
+                                    <span className='font-bold absolute flex justify-center items-center h-4 w-4 -top-1 -right-1 bg-white rounded-full'>
+                                        {cart && Object.keys(cart).length}
+                                    </span>
+                                    <FaShoppingCart className='w-6 h-6 text-white' />
+                                </Link>
                                 <Dropdown>
                                     <Dropdown.Trigger>
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                             >
-                                                {user?.name || 'User'}
-
-                                                <svg
-                                                    className="ms-2 -me-0.5 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
+                                                <FaUserCircle className="w-6 h-6 text-white" />
                                             </button>
                                         </span>
                                     </Dropdown.Trigger>
-
                                     <Dropdown.Content>
-                                        {
-                                            user?.role === 'admin' && (
-                                                <Dropdown.Link href={route('admin.dashboard')} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                    Dashboard
-                                                </Dropdown.Link>
-                                            )
-                                        }
+                                        {user?.role === 'admin' && (
+                                            <Dropdown.Link href={route('admin.dashboard')} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                Dashboard
+                                            </Dropdown.Link>
+                                        )}
                                         <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
                                         <Dropdown.Link href={route('logout')} method="post" as="button">
                                             Log Out
@@ -101,11 +72,16 @@ export default function Authenticated({ user, header, children }) {
                                 </Dropdown>
                             </div>
                         </div>
-
                         <div className="-me-2 flex items-center sm:hidden">
+                            <Link href={route('cart.index')} className='relative'>
+                                <span className='font-bold absolute flex justify-center items-center h-4 w-4 -top-1 -right-1 bg-gray-400 text-white hover:text-gray-500 rounded-full'>
+                                    {cart && Object.keys(cart).length}
+                                </span>
+                                <FaShoppingCart className='w-6 h-6 text-gray-400 hover:text-gray-500' />
+                            </Link>
                             <button
-                                onClick={() => setShowingNavigationDropdown((previousState) => !previousState)}
-                                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+                                onClick={() => setShowingNavigationDropdown(prev => !prev)}
+                                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500 transition duration-150 ease-in-out"
                             >
                                 <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path
@@ -127,37 +103,76 @@ export default function Authenticated({ user, header, children }) {
                         </div>
                     </div>
                 </div>
-
-                <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
+                <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden fixed top-16 left-0 w-full bg-gray-800 z-10'}>
                     <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink href={route('admin.dashboard')} active={route().current('dashboard')}>
-                            Dashboard
+                        <ResponsiveNavLink className="hover:bg-gray-700" href={route('home')} active={route().current('home')}>
+                            Home
                         </ResponsiveNavLink>
+                        {categories?.map(category => (
+                            <ResponsiveNavLink
+                                key={category.id}
+                                className=" hover:bg-gray-700"
+                                href={route('products.index', [category.id, category.slug])}
+                                active={route().current('products.index', [category.id, category.slug])}
+                            >
+                                {category.name}
+                            </ResponsiveNavLink>
+                        ))}
+                        {user?.role === 'admin' && (
+                            <ResponsiveNavLink
+                                className=" hover:bg-gray-700"
+                                href={route('admin.dashboard')}
+                                active={route().current('admin.dashboard')}
+                            >
+                                Dashboard
+                            </ResponsiveNavLink>
+                        )}
                     </div>
-
-                    <div className="pt-4 pb-1 border-t border-gray-200">
-                        <div className="px-4">
-                            <div className="font-medium text-base text-gray-800">{user?.name || 'User'}</div>
-                            <div className="font-medium text-sm text-gray-500">{user?.email || 'Email'}</div>
-                        </div>
-
+                    <div className="pt-4 pb-1 border-t border-gray-600">
                         <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>Profile</ResponsiveNavLink>
-                            <ResponsiveNavLink method="post" href={route('logout')} as="button">
+                            <ResponsiveNavLink className=" hover:bg-gray-700" href={route('profile.edit')}>
+                                Profile
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink className=" hover:bg-gray-700" method="post" href={route('logout')} as="button">
                                 Log Out
                             </ResponsiveNavLink>
                         </div>
                     </div>
                 </div>
             </nav>
-
             {header && (
                 <header className="bg-white shadow">
                     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{header}</div>
                 </header>
             )}
-
             <main className='pt-16'>{children}</main>
+            {/* Footer */}
+            <footer className="bg-gray-800 text-white py-12 pt-12 z-10">
+                <div className="max-w-7xl mx-auto px-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div>
+                            <h3 className="text-xl font-semibold mb-4">About Us</h3>
+                            <p className="text-gray-400">Your trusted source for quality products at competitive prices.</p>
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-semibold mb-4">Quick Links</h3>
+                            <ul className="space-y-2">
+                                <li><Link href="/products" className="text-gray-400 hover:text-white">Products</Link></li>
+                                <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-semibold mb-4">Contact Info</h3>
+                            <div className="text-gray-400">
+                                <p>Email: info@store.com</p>
+                                <p>Phone: (555) 123-4567</p>
+                                <p>Address: 123 Store St, City, State</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
         </div>
     );
 }

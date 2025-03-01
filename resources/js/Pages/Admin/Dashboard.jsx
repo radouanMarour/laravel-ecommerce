@@ -38,13 +38,19 @@ function Dashboard({ auth, children }) {
                                         Manage Categories
                                     </Link>
                                 </li>
-                                {/*
+
                                 <li>
-                                    <Link href={route('admin.customers.index')} className="flex items-center w-full p-2 text-gray-300 hover:bg-gray-700">
+                                    <Link href={route('admin.users')} className="flex items-center w-full p-2 text-gray-300 hover:bg-gray-700">
                                         <HiUsers className="w-5 h-5 mr-2" />
-                                        Customers
+                                        Manage Users
                                     </Link>
-                                </li> */}
+                                </li>
+                                <li>
+                                    <Link href={route('orders')} className="flex items-center w-full p-2 text-gray-300 hover:bg-gray-700">
+                                        <HiShoppingCart className="w-5 h-5 mr-2" />
+                                        Manage Orders
+                                    </Link>
+                                </li>
                             </ul>
                         </nav>
                     </div>

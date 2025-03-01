@@ -29,19 +29,19 @@ function ManageCategories({ auth, categories }) {
                     <table className="w-full border-collapse border-gray-700">
                         <thead>
                             <tr className="bg-gray-700">
-                                <th className="border border-gray-600 p-2">ID</th>
-                                <th className="border border-gray-600 p-2">Image</th>
-                                <th className="border border-gray-600 p-2">Name</th>
-                                <th className="border border-gray-600 p-2">Description</th>
-                                <th className="border border-gray-600 p-2">Date</th>
-                                <th className="border border-gray-600 p-2">Actions</th>
+                                <th className="border border-gray-600 p-2 text-center">ID</th>
+                                <th className="border border-gray-600 p-2 text-center">Image</th>
+                                <th className="border border-gray-600 p-2 text-center">Name</th>
+                                <th className="border border-gray-600 p-2 text-center">Description</th>
+                                <th className="border border-gray-600 p-2 text-center">Date</th>
+                                <th className="border border-gray-600 p-2 text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {categories?.map((category) => (
                                 <tr key={category.id} className="bg-gray-800 hover:bg-gray-700">
-                                    <td className="border border-gray-600 p-2">{category.id}</td>
-                                    <td className="border border-gray-600 p-2">
+                                    <td className="border border-gray-600 p-2 text-center">{category.id}</td>
+                                    <td className="border border-gray-600 p-2 text-center">
                                         {category.image && (
                                             <img
                                                 src={`/storage/${category.image}`}
@@ -50,14 +50,14 @@ function ManageCategories({ auth, categories }) {
                                             />
                                         )}
                                     </td>
-                                    <td className="border border-gray-600 p-2">{category.name}</td>
-                                    <td className="border border-gray-600 p-2">
+                                    <td className="border border-gray-600 p-2 text-center">{category.name}</td>
+                                    <td className="border border-gray-600 p-2 text-center">
                                         {category.description?.length > 50
                                             ? category.description.substring(0, 50) + "..."
                                             : category.description}
                                     </td>
-                                    <td className="border border-gray-600 p-2">{new Date(category.created_at).toLocaleDateString()}</td>
-                                    <td className="border border-gray-600 p-2">
+                                    <td className="border border-gray-600 p-2 text-center">{new Date(category.created_at).toLocaleDateString()}</td>
+                                    <td className="border border-gray-600 p-2 text-center">
                                         <div className="flex justify-evenly">
                                             <Link
                                                 href={route('admin.categories.edit', category.id)}
