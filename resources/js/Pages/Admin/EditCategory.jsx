@@ -40,7 +40,11 @@ function EditCategory({ auth, category }) {
             formData.append('image', data.image);
         }
 
-        post(route("admin.categories.update", category.id), formData);
+        post(route("admin.categories.update", category.id), formData, {
+            onSuccess: () => {
+                setImagePreview(null);
+            },
+        });
     };
 
     return (

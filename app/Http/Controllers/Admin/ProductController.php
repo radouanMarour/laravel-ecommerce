@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -41,6 +42,7 @@ class ProductController extends Controller
 
         $product = Product::create([
             'name' => $request->name,
+            'slug' => Str::slug($request->name),
             'price' => $request->price,
             'stock' => $request->stock,
             'category_id' => $request->category_id,
@@ -53,12 +55,12 @@ class ProductController extends Controller
         }
 
         if ($request->hasFile('thumbnail_images')) {
-            $images = [];
+            $thumbnail_images = [];
             foreach ($request->file('thumbnail_images') as $image) {
                 $path = $image->store('images/products', 'public');
-                $images[] = $path;
+                $thumbnail_images[] = $path;
             }
-            $product->update(['images' => $images]);
+            $product->update(['thumbnail_images' => $thumbnail_images]);
         }
 
         return redirect()->route('admin.products')

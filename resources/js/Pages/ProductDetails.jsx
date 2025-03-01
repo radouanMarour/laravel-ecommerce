@@ -9,6 +9,8 @@ export default function ProductDetails({ auth, product, relatedProducts }) {
     const { addToCart } = useCart();
     const { post } = useForm();
 
+    console.log(product)
+
     const handleFeaturedToggle = () => {
         post(route('admin.products.toggleFeatured', product.id), {
             preserveScroll: true,
@@ -27,7 +29,7 @@ export default function ProductDetails({ auth, product, relatedProducts }) {
                         {/* Left Column - Image */}
                         <div className="flex flex-col md:flex-row items-center md:items-start space-x-1 space-y-4">
                             <div className="w-20 flex flex-row md:flex-col space-x-2 md:space-x-0 md:space-y-4 order-2 md:order-1 mt-1">
-                                {product.thumbnail_images.map((image, index) => (
+                                {product?.thumbnail_images?.map((image, index) => (
                                     <img
                                         key={index}
                                         onClick={() => setIndex(index)}
@@ -51,7 +53,7 @@ export default function ProductDetails({ auth, product, relatedProducts }) {
                                 {auth.user?.role === 'admin' && (
                                     <button
                                         onClick={handleFeaturedToggle}
-                                        className={`px-4 py-2 rounded ${product.is_featured
+                                        className={`px-2 py-2 rounded text-sm ${product.is_featured
                                             ? 'bg-yellow-500 hover:bg-yellow-600'
                                             : 'bg-gray-500 hover:bg-gray-600'
                                             } text-white`}
